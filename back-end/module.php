@@ -1,8 +1,13 @@
 <?php
-    require_once("./models/Product.php");
-    require_once("./models/Dvd.php");
-    require_once("./models/Furniture.php");
-    require_once("./models/Book.php");
+    $basePath = ".";
+
+    //MODELS
+    require_once("$basePath/models/Product.php");
+    require_once("$basePath/models/Dvd.php");
+    require_once("$basePath/models/Furniture.php");
+    require_once("$basePath/models/Book.php");
     
-    require_once("./services/ProductService.php");
+    //SERVICES
+    require_once("$basePath/services/ProductService.php");
+    require_once("$basePath/gateways/controllers/dto/ProductDto.php");
 ?>
