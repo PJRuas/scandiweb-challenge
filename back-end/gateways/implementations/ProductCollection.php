@@ -1,5 +1,5 @@
 <?php
-    require('./gateways/ProductGateway.php');
+    require_once('./gateways/ProductGateway.php');
 
     class ProductCollection implements ProductGateway{
         private $products = [];
@@ -9,8 +9,8 @@
             return $product;
         }
 
-        public function delete(Product $product){
-            unset($this->products[$product->getSku()]);
+        public function delete(string $productSku){
+            unset($this->products[$this->getBySku($productSku)]);
         }
 
         public function getBySku(string $productSku){
@@ -21,11 +21,14 @@
             return $this->products;
         }
 
-        // public function update(Product $product){
+        public function update(Product $product){
         //     $productToUpdate = $this->getBySku($product->getSku());
             
-        // }
+        }
 
+        public function getByParam(string $parameter, string $value){
+            
+        }
 
     }
 ?>

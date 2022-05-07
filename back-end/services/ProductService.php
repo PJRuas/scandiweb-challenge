@@ -1,5 +1,6 @@
 <?php
     require_once('./gateways/implementations/ProductCollection.php');
+    require_once('./gateways/implementations/ProductMysql.php');
     require_once('./services/validators/ProductValidator.php');
 
     class ProductService {
@@ -12,8 +13,9 @@
         }
 
         private function checkRepository(){
-            $dbSlector = ['collection' => new ProductCollection()];
+            $dbSlector = ['collection' => new ProductCollection(), 'mysql' => new ProductMysql()];
             
+            $this->dbType ??= 'collection';
             $this->repository ??= $dbSlector[$this->dbType];
         }
 
@@ -24,15 +26,17 @@
         public function saveToDB (Product $product) {
             $this->checkRepository();
             $this->checkValidator();
-            
-            return $this->repository->save($product);
+
+            if($this->validator->validateSave($product)) {
+                return $this->repository->save($product);
+            }
         }
 
-        public function deleteFromDB (Product $product) {
+        public function deleteFromDB (string $productSku) {
             $this->checkRepository();
             $this->checkValidator();
 
-            $this->repository->delete($product);
+            $this->repository->delete($productSku);
         }
 
         public function getAllFromDB () {
@@ -44,6 +48,12 @@
             $this->checkRepository();
             
             return $this->repository->getBySku($productSku);
+        }
+
+        public function getByParam (string $param, string $value) {
+            $this->checkRepository();
+            
+            return $this->repository->getByParam($param, $value);
         }
 
     }

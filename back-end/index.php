@@ -1,57 +1,75 @@
-
-<?php
-        include_once("./components/nav-bar.php");
-
-        require_once("./module.php");
-
-        $dvdTest = new Dvd('Dvd-key', 'A Fuga das Galinhas', 45, 400.65);
-        $bookTest = new Book('Book-Key', 'Lord of the Rings', 125, 0.5);
-        $furnitureTest = new Furniture('Furniture-Key', 'A Huge Couch', 5000.55, ['H' => 80, 'W' => 300, 'L' => 85]);
-
-
-        $inputTest = [$dvdTest, $bookTest, $furnitureTest];
-        $service = new ProductService('collection');
-
-        foreach($inputTest as $product){
-                $service->saveToDB($product);
-        }
-
-        $db = $service->getAllFromDB();
-
-        foreach($db as $result){
-                echo $result . '</br>';
-        }
-
-        $service->deleteFromDB($furnitureTest);
-        $db = $service->getAllFromDB();
-        $test = $service->getBySku('Book-Key');
-
-        foreach($db as $result){
-                echo $result . '</br>';
-        }
-
-        echo $test;
-
-        // $arrayTest = [$dvdTest, $bookTest, $furnitureTest];
-
-        // foreach($arrayTest as $product){
-        //         echo $product->getSku() . '<br>';
-        //         echo $product->getName() . '<br>';
-        //         echo $product->getPrice() . '<br>';
-        //         echo $product->getAttribute() . '<br>';
-        // }
-
-        // $test = $furnitureTest->getAttribute()['W'];
-
-        // echo $test;
-
-        // echo '<pre>';
-        // var_dump($furnitureTest->getAttribute());
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Scandiweb-challenge</title>
+</head>
+<body>
+        <?php
+                require_once("./module.php");
+                ?>
 
 
+        <?php
 
-        // define('PI', 3.14);
-        // echo PI . '</br>';
+                $searchParam = $_GET['search'] ??= null;
+                $filter = $_GET['filter'] ??= null;
+        ?>
 
-        // include_once("./components/footer.php");
-?>
+        <div class="input-group" id="search-bar">
+                <form>
+                        <input type="text" placeholder="Search Product" name="search" value="<?php echo $searchParam ?>">
+                        <select name="filter" onchange="" class="form-control">
+                                <option value="name">name</option>
+                                <option value="sku">sku</option>
+                                <option value="price">price</option>
+                                <option value="type">type</option>
+                        </select>
+                        <button class="btn btn-outline-secondary" type="submit">Search</button>
+                </form>
+        </div>
+
+        <form method="POST" action="" style="display: inline-block;">
+                <button><a href="productPage.php">ADD</a></button>
+                <button type="submit">MASS DELETE</button>
+        </br>
+        </br>
+        <?php
+                
+                $service = new ProductService('mysql');
+                $productDto = new ProductDto();
+                
+                if($searchParam){
+                        $products = $service->getByParam($filter, $searchParam);
+                } else {
+                        $products = $service->getAllFromDB();
+                }
+
+                foreach($products as $result){ 
+                        $product = $productDto->fromResponse($result);
+                        echo $product;
+                        ?>       
+                        <tr>
+                                <td>
+                                        <input type="checkbox" class="delete-checkbox" name="delete[]" value="<?php echo $product->getSku() ?>">
+                                </td>
+                        </tr>
+                </br>
+        </br>
+        
+        <?php 
+                }
+
+                if($_SERVER['REQUEST_METHOD'] === 'POST') {
+                        foreach($_POST['delete'] as $toDelete){
+                                $service->deleteFromDB($toDelete);
+                        }
+                        header('Location: ./index.php');
+                }
+                ?>
+        </form>
+        
+</body>
+</html>
