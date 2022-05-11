@@ -1,0 +1,10 @@
+.external-links::before, .external-links::after {
+    content: '';
+    height: 1px;
+    width: 3rem;
+    background: var(--color-primary);
+}
+
+.links {
+    color: var(--color-primary);
+}
