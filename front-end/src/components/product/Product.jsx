@@ -7,11 +7,11 @@ import furnitureImg from '../../resources/images/furniture.png'
 const Product = (props) => {
   let productImage = {'book' : bookImg, 'dvd' : dvdImg, 'furniture' : furnitureImg};
 
-  let product = {'name' : props.name ? props.name : 'Test Name', 
-  'price' : props.price ? props.price : 25.99, 
-  'sku' : props.sku ? props.sku : 'TSTSKU', 
+  let product = {'name' : props.name ? props.name : 'Product Name', 
+  'price' : props.price ? props.price : 0.00,
+  'sku' : props.sku ? props.sku : 'PCT-SKU', 
   'attribute' : props.attribute ? props.attribute : 'Product Attribute',
-  'type' : props.type ? props.type : 'furniture',
+  'type' : props.type ? props.type : 'book',
   };
 
   return (
@@ -29,7 +29,4 @@ const Product = (props) => {
   )
 }
 
-let product = Product.product;
-
-export {product}
 export default Product
