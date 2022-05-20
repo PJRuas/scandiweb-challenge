@@ -8,7 +8,7 @@ nav {
     display: flex;
     border-radius: 1.2rem;
     backdrop-filter: blur(15px);
-    bottom: 2rem;
+    bottom: 2.2rem;
     width: fit-content;
 }
 
@@ -28,10 +28,24 @@ div > .btn {
     width: 9rem;
 }
 
-.btn-alert {
-    color: blueviolet;
+#delete-product-btn, #btn-cancel-add {
+    background-color: var(--color-alert);
+    color: var(--color-alert-variant);
 }
 
-.btn-blocked {
-    color: brown;
+#delete-product-btn:hover, #btn-cancel-add:hover {
+    background-color: var(--color-alert-variant);
+    color: var(--color-alert);
+}
+
+#btn-cancel-add > a {
+    color: var(--color-alert-variant);
+}
+
+#btn-cancel-add > a:hover {
+    color: var(--color-alert);
+}
+
+.btn-primary > a:hover {
+    color: var(--color-bg-variant);
 }

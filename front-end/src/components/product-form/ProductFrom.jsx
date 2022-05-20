@@ -1,72 +1,102 @@
-import React, {useState} from 'react'
-import { Link } from 'react-router-dom'
+import React from 'react'
+import { Navigate } from 'react-router-dom'
 import './productForm.css'
 import Product from '../product/Product'
 
-const ProductFrom = () => {
-    const typeFields = {
-        'book':[{'Weight':'Kg'}],
-        'dvd':[{'Size':'MB'}],
-        'furniture':[{'Height':'cm'}, {'Width':'cm'}, {'Length':'cm'}]
+class ProductFrom extends React.Component {
+    constructor(){
+        super()
+        this.typeFields = {
+            'book':['Weight'],
+            'dvd':['Size'],
+            'furniture':['Height', 'Width', 'Length']
+        }
+
+        this.commonFields = ['sku', 'name', 'price', 'type']
+
+        this.initial = 'book'
+
+        this.initialPreview = [{
+            'name':'', 'type': this.initial, 'price':'', 'attribute':'', 'sku': ''
+        }]
+        this.formFields = this.typeFields[this.initial]
+        this.productPreview = this.initialPreview
+        this.attributeConverter = {}
+
+        this.setFormFields = this.setFormFields.bind(this)
+        this.setProductPreview = this.setProductPreview.bind(this)
+        this.setAttributeConverter = this.setAttributeConverter.bind(this)
+        
+        this.handleType = this.handleType.bind(this)
+        this.handleAttribute = this.handleAttribute.bind(this)
+        this.handleFields = this.handleFields.bind(this)
+        this.handlePreview = this.handlePreview.bind(this)
+        this.isArrayEmpty = this.isArrayEmpty.bind(this)
+        this.resetFields = this.resetFields.bind(this)
+        this.handleSave = this.handleSave.bind(this)
+    }
+    
+    setFormFields(value){
+        this.formFields = value
+    }
+    setProductPreview(value){
+        this.productPreview = value
+    }
+    setAttributeConverter(value){
+        this.attributeConverter = value
+    }
+    
+    handleSave(){
+        let status = true
+        if(!Object.values(this.productPreview[0]).includes('') ){
+            if(this.productPreview[0].type !== 'furniture' || this.productPreview[0].attribute.length === 3){
+                status = false
+            }
+        }
+        this.props.statusFunction(status)
+    }
+    
+    handleType(e){
+        this.handleFields(e)
+        this.handlePreview(e)
     }
 
-    const initialPreview = [{
-        'name':'', 'type':'', 'price':'', 'attribute':'', 'sku': ''
-    }]
+    handleAttribute(e){
 
-    const [formFields, setFormFields] = useState(typeFields['book'])
-
-    const [productPreview, setProductPreview] = useState(initialPreview)
-
-    const [attributeConverter, setAttributeConverter] = useState({}) 
-
-    let saveTrue = false
-
-    function handleType(e){
-        handleFields(e)
-        handlePreview('PERFORM RESET')
-    }
-
-    function handleAttribute(e){
-        let commonFields = ['sku', 'name', 'price', 'type']
         let attribute = e.target
-        let attributes = attributeConverter
-        if (!commonFields.includes(attribute.id)) {
+        let attributes = this.attributeConverter
+        if (!this.commonFields.includes(attribute.id)) {
             attributes[attribute.id] = attribute.value
         }
-        setAttributeConverter(attributes)
+        this.setAttributeConverter(attributes)
     }
 
-    function handlePreview(e) {
-        let previewInput = productPreview[0];
-        
-        if(e === 'PERFORM RESET'){
-            previewInput.type = document.getElementById('type').value
-            previewInput.attribute = ''
-            setProductPreview([previewInput])
-            return
-        }
-
-        handleAttribute(e)
+    handlePreview(e) {
+        let previewInput = this.productPreview[0];
+        this.handleAttribute(e)
         let attribute = []
-        for(let field in attributeConverter){
-            for(let i of formFields){
-                if (i[field] ) {
-                    attribute.push(attributeConverter[field])
+        for(let field in this.attributeConverter){
+            for(let i of this.formFields){
+                if (i == field ) {
+                    attribute.push(this.attributeConverter[field])
                 }
             }
         }
-        if (isArrayEmpty(attribute)){
+
+        if (this.isArrayEmpty(attribute)){
             attribute = ''
         }
         previewInput['attribute'] = attribute
         previewInput[e.target.id] = e.target.value
-        setProductPreview([previewInput])
+        this.setProductPreview([previewInput])
+        this.handleSave()
+        this.forceUpdate()
     }
 
-    function isArrayEmpty(array) {
+    isArrayEmpty(array) {
         let emptyParameters = [null, '']
         let check = true;
+        
         if(array.length === 0) {
             return check
         }
@@ -79,69 +109,72 @@ const ProductFrom = () => {
         return check
     }
 
-    function handleFields(e) {
-        setFormFields(typeFields[e.target.value])
-        resetFields()
+    handleFields(e) {
+        this.setFormFields(this.typeFields[e.target.value])
+        this.resetFields()
     }
 
-    function resetFields() {
-        for(let key of Object.keys(typeFields)){
-            for(let item of (typeFields[key])){
-                Object.keys(item).map((id => {
-                    let target = document.getElementById(id)
+    resetFields() {
+        for(let key in this.typeFields){
+            for(let item of (this.typeFields[key])){
+                    let target = document.getElementById(item)
                     if(target){
                         target.value = ''
                     }
-                }))
             }
+        }
+        for(let field in this.attributeConverter){
+            this.attributeConverter[field] = ''
         }
     }
 
-  return (
-      <section className='container' id='add-product-page'>
-        <div id="add-product-header">
-            <h1>Add Product</h1>
-        </div>
-        <div id="product-view">
-            <div>
-                <form id='product-form'>
-                    <div id="form-selector">
-                        <label id='select-label'>Type</label>
-                        <select name="productType" id="type" onChange={handleType}>
-                            <option value="book">Book</option>
-                            <option value="dvd">Dvd</option>
-                            <option value="furniture">Furniture</option>
-                        </select>
-                    </div>
-                    <div className="input-group">
-                        <input type="text" autoComplete='off' name="productSku" className="input" id="sku" required onChange={handlePreview}/>
-                        <label className='input-label'>Sku</label>
-                    </div>
-                    <div className="input-group">
-                        <input type="text" autoComplete='off' name="productName" className="input" id="name" required onChange={handlePreview}/>
-                        <label className='input-label'>Name</label>
-                    </div>
-                    <div className="input-group">
-                        <input type="number" autoComplete='off' name="productPrice" step="0.01" min="0.01" className="input" id="price" required onChange={handlePreview}/>
-                        <label className='input-label'>Price</label>
-                    </div>
-                    {formFields.map((field) => {return <>
-                        <div className='input-group'>
-                            <input type="number" autoComplete='off' name={Object.keys(field)[0]} step="0.01" min="0.01" className="input" id={Object.keys(field)[0]} required onChange={handlePreview}/>
-                            <label className='input-label'>{ Object.keys(field)[0]}</label>
-                        </div>
-                    </>
-                    })}
-                    <button id='save-product-btn' className={'btn ' + (saveTrue ? 'btn-alert' : 'btn-blocked')} type='submit'>SAVE</button>
-                </form>
-                    <button id='btn-cancel' className='btn btn-primary' ><Link className='a-route' to="/">CANCEL</Link></button>
+
+    render(){
+        return (
+            <section className='container' id='add-product-page'>
+                <div id="add-product-header">
+                    <h1>Add Product</h1>
+                </div>
+                <div id="product-view">
+                    <div>
+                        <form id='product-form' action='/'>
+                            <div id="form-selector">
+                                <label id='select-label'>Type</label>
+                                <select name="productType" id="type" onChange={this.handleType}>
+                                    <option value="book">Book</option>
+                                    <option value="dvd">Dvd</option>
+                                    <option value="furniture">Furniture</option>
+                                </select>
+                            </div>
+                            <div className="input-group">
+                                <input type="text" autoComplete='off' name="productSku" className="input" id="sku" required onChange={this.handlePreview} />
+                                <label className='input-label'>Sku</label>
+                            </div>
+                            <div className="input-group">
+                                <input type="text" autoComplete='off' name="productName" className="input" id="name" required onChange={this.handlePreview}/>
+                                <label className='input-label'>Name</label>
+                            </div>
+                            <div className="input-group">
+                                <input type="number" autoComplete='off' name="productPrice" step="0.01" min="0.01" className="input" id="price" required onChange={this.handlePreview}/>
+                                <label className='input-label'>Price</label>
+                            </div>
+                            {this.formFields.map((field) => {return <>
+                                <div className='input-group'>
+                                    <input type="number" autoComplete='off' name={field} step="0.01" min="0.01" className="input" id={field} required onChange={this.handlePreview}/>
+                                    <label className='input-label'>{field}</label>
+                                </div>
+                            </>
+                            })}
+                            <input type='submit' id='SUBMIT-PRODUCT-FORM'/>
+                    </form>
+                </div>
+                <div className="product-preview">
+                    {this.productPreview.map((input) =>  <Product name={input.name} type={input.type} price={input.price} sku={input.sku} attribute={input.attribute}/>)}
+                </div>
             </div>
-            <div className="product-preview">
-                {productPreview.map((input) =>  <Product name={input.name} type={input.type} price={input.price} sku={input.sku} attribute={input.attribute}/>)}
-            </div>
-        </div>
-    </section>
-  )
+        </section>
+        )
+    }
 }
 
 export default ProductFrom

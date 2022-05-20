@@ -1,29 +1,62 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './product.css';
 import bookImg from '../../resources/images/book.png'
 import dvdImg from '../../resources/images/dvd.png'
 import furnitureImg from '../../resources/images/furniture.png'
 
 const Product = (props) => {
-  let productImage = {'book' : bookImg, 'dvd' : dvdImg, 'furniture' : furnitureImg};
+  const productImage = {'book' : bookImg, 'dvd' : dvdImg, 'furniture' : furnitureImg};
+  
+  const defaultView = {'name' : 'Product Name',
+    'price' : 0.00,
+    'sku' : 'PCT-SKU',
+    'attribute' : 'Product Attribute',
+    'type' : 'book'
+  }
 
-  let product = {'name' : props.name ? props.name : 'Product Name', 
-  'price' : props.price ? props.price : 0.00,
-  'sku' : props.sku ? props.sku : 'PCT-SKU', 
-  'attribute' : props.attribute ? props.attribute : 'Product Attribute',
-  'type' : props.type ? props.type : 'book',
+  let product = {'name' : props.name ? props.name : defaultView.name, 
+  'price' : props.price ? props.price : defaultView.price,
+  'sku' : props.sku ? props.sku : defaultView.sku, 
+  'attribute' : props.attribute ? props.attribute : defaultView.attribute,
+  'type' : props.type ? props.type : defaultView.type,
   };
+
+  const attributeUnit = {'book' : ' Kg', 'dvd' : ' MB', 'furniture' : ' cm'}
+
+  const [checked, setChecked] = useState(true)
+
+  function handleChecked(){
+    setChecked(!checked)
+    props.function({'sku' : product.sku, 'delete' : checked})
+  }
+
+  function generateAttributeView(attribute){
+    let view = ''
+    if(attribute === defaultView.attribute){return attribute}
+
+    if(attribute.length === 1){
+      return attribute + attributeUnit[product.type]
+    } else {
+      let i = 0
+      while(i < attribute.length-1){
+        view += attribute[i] + 'x'
+        i++
+      }
+      view += attribute[i] + attributeUnit[product.type]
+    }
+    return view
+  }
 
   return (
     <section className="product">
       <label className='product-checkbox'>
-          <input type="checkbox" name="delete-checkbox" className='delete-checkbox'/>
+          <input type="checkbox" name="delete-checkbox" className='delete-checkbox' onChange={handleChecked}/>
           <div className="checkbox"></div>
       </label>
         <img className='product-image' src={productImage[product.type]} alt={product.type + ' default picture'}/>
         <h5>{product.sku}</h5>
         <h3>{product.name}</h3>
-        <h5>{product.attribute}</h5>
+        <h5>{generateAttributeView(product.attribute)}</h5>
         <h4>U${product.price}</h4>
     </section>
   )

@@ -2,7 +2,7 @@
     border-radius: 0 1rem 1rem 0;
     text-align: center;
     color: var(--color-bg);
-    background: var(--color-white);
+    background: var(--color-light);
     width: 7rem;
     height: 1.7rem;
 }
@@ -45,6 +45,9 @@
     align-items: flex-start;
  }
 
+ #SUBMIT-PRODUCT-FORM{
+     display: none;
+ }
 
  /* -------------------------- MEDIUM DEVICES ------------------------- */
 @media screen and (max-width: 1024px) {
