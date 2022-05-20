@@ -2,17 +2,18 @@ import React, { useState } from 'react'
 import './productList.css'
 import Product from '../product/Product'
 
-const ProductList = () => {
+const ProductList = (props) => {
 
-  let allProducts = [{'name':'Lord of The Rings', 'price':25.99, 'sku':'LORD', 'attribute':0.256, 'type':'book'}, 
-    {'name':'Game of Thrones', 'price':19.99, 'sku':'GOT', 'attribute':526, 'type':'dvd'},
+  let allProducts = [{'name':'Lord of The Rings', 'price':25.99, 'sku':'LORD', 'attribute':[0.256], 'type':'book'}, 
+    {'name':'Game of Thrones', 'price':19.99, 'sku':'GOT', 'attribute':[526], 'type':'dvd'},
     {'name':'A Couch', 'price':425.99, 'sku':'COUCH', 'attribute':[500,250,300], 'type':'furniture'},
-    {'name':'Harry Potter', 'price':15.99, 'sku':'HP', 'attribute':0.135, 'type':'book'},
-    {'name':'Mary Poppins', 'price':25.99, 'sku':'MARY', 'attribute':0.123, 'type':'dvd'},
-    {'name':'Black Panther', 'price':45.99, 'sku':'BLACK', 'attribute':644, 'type':'dvd'}];
+    {'name':'Harry Potter', 'price':15.99, 'sku':'HP', 'attribute':[0.135], 'type':'book'},
+    {'name':'Mary Poppins', 'price':25.99, 'sku':'MARY', 'attribute':[0.123], 'type':'dvd'},
+    {'name':'Black Panther', 'price':45.99, 'sku':'BLACK', 'attribute':[644], 'type':'dvd'}];
 
   const [filteredProducts, setFilteredProducts] = useState(allProducts)
   const [searchFilter, setSearchFilter] = useState({'search-input':'', 'select-filter':'all'})
+  const [toDelete, setToDelete] = useState({})
 
   function handleSearch(e){
     let filterState = searchFilter;
@@ -33,6 +34,15 @@ const ProductList = () => {
     setFilteredProducts(result);
   }
 
+  function handleCheck(e){
+    let deletable = toDelete
+    let key = e[Object.keys(e)[0]]
+    let value = e[Object.keys(e)[1]]
+    deletable[key] = value
+    setToDelete(deletable)
+    props.function(toDelete)
+  }
+
   return (
     <section id='product-list' className='container'>
       <div id="product-list-header">
@@ -51,7 +61,7 @@ const ProductList = () => {
         </form>
       </div>
       <div id="product-list-itens">
-        {filteredProducts.map((product) => {return <Product name={product['name']} type={product['type']} attribute={product['attribute']} price={product['price']} sku={product['sku']} key={product.sku}/>})}
+        {filteredProducts.map((product) => {return <Product function={handleCheck} name={product['name']} type={product['type']} attribute={product['attribute']} price={product['price']} sku={product['sku']} key={product.sku}/>})}
       </div>
     </section>
   )
