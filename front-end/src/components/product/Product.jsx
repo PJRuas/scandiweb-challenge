@@ -34,21 +34,37 @@ const Product = (props) => {
     let view = ''
     if(attribute === defaultView.attribute){return attribute}
 
-    if(attribute.length === 1){
-      return attribute + attributeUnit[product.type]
-    } else {
-      let i = 0
-      while(i < attribute.length-1){
-        view += attribute[i] + 'x'
-        i++
+    if(typeof attribute == 'string' || attribute instanceof String){
+
+      if(attribute.charAt(0) !== '['){
+        attribute = parseFloat(attribute)
+        return attribute + attributeUnit[product.type]
+      } else {
+        attribute = attribute.slice(1, attribute.length-1).split(',').map(parseFloat)
+        let i = 0
+        while(i < attribute.length-1){
+          view += attribute[i] + 'x'
+          i++
+        }
+        view += attribute[i] + attributeUnit[product.type]
       }
-      view += attribute[i] + attributeUnit[product.type]
+    } else {
+      if(attribute.length === 1){
+        return attribute + attributeUnit[product.type]
+      } else {
+        let i = 0
+        while(i < attribute.length-1){
+          view += attribute[i] + 'x'
+          i++
+        }
+        view += attribute[i] + attributeUnit[product.type]
+      }
     }
     return view
   }
-
-  return (
-    <section className="product">
+    
+    return (
+      <section className="product">
       <label className='product-checkbox'>
           <input type="checkbox" name="delete-checkbox" className='delete-checkbox' onChange={handleChecked}/>
           <div className="checkbox"></div>

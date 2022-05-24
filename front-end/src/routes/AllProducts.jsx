@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import NavBar from '../components/nav-bar/NavBar'
 import ProductList from '../components/product-list/ProductList'
 
@@ -10,11 +10,25 @@ class AllProducts extends React.Component {
     this.handleDeleteButton = this.handleDeleteButton.bind(this)
     this.toDelete = {}
     this.buttonStatus = true
-
     this.setToDelete = this.setToDelete.bind(this)
     this.setButtonStatus = this.setButtonStatus.bind(this)
 
-    this.chalala = this.chalala.bind(this)
+    this.massDelete = this.massDelete.bind(this)
+
+    this.state = {
+      dbRequest: null
+    }
+
+  }
+
+  populateDb(){
+      fetch("http://localhost:8080")
+      .then((result) => result.json())
+      .then((jsonResult) => this.setState({dbRequest : jsonResult}))
+  }
+
+  componentDidMount(){
+    this.populateDb()
   }
 
   setToDelete(value){
@@ -29,7 +43,6 @@ class AllProducts extends React.Component {
     this.setToDelete(e)
     this.handleDeleteButton()
     this.forceUpdate()
-    console.log(this.toDelete)
   }
 
   handleDeleteButton(){
@@ -40,11 +53,27 @@ class AllProducts extends React.Component {
     }
   }
 
-  chalala(){
-    alert('Mass Delete')
+  massDelete(){
+    const deletable = []
+    for(let key in this.toDelete){
+      if(this.toDelete[key]){
+        deletable.push(key)
+      }
+    }
+    fetch('http://localhost:8080/delete', {
+            method: 'POST',
+            body: JSON.stringify(deletable),
+        })
+    this.setToDelete({})
+    this.setState({dbRequest: null})
+    this.populateDb()
   }
 
   render(){
+    if(!this.state.dbRequest){
+      return <div />
+    }
+
       return(
         <>
         <NavBar firstButton={{'id':'nav-first-button',
@@ -54,9 +83,9 @@ class AllProducts extends React.Component {
           secondButton={{'id':'delete-product-btn',
           'text':'MASS DELETE',
           'class':'btn btn-alert',
-          'function': this.chalala,
+          'function': this.massDelete,
           'buttonStatus': this.buttonStatus}}/>
-        <ProductList function={this.getDeletable}/>
+          <ProductList function={this.getDeletable} products={this.state.dbRequest}/>
     </>
     )
   }

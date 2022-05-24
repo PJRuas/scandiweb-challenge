@@ -1,5 +1,4 @@
 import React from 'react'
-import { Navigate } from 'react-router-dom'
 import './productForm.css'
 import Product from '../product/Product'
 
@@ -34,6 +33,7 @@ class ProductFrom extends React.Component {
         this.isArrayEmpty = this.isArrayEmpty.bind(this)
         this.resetFields = this.resetFields.bind(this)
         this.handleSave = this.handleSave.bind(this)
+        this.handleSubmit = this.handleSubmit.bind(this)
     }
     
     setFormFields(value){
@@ -62,7 +62,6 @@ class ProductFrom extends React.Component {
     }
 
     handleAttribute(e){
-
         let attribute = e.target
         let attributes = this.attributeConverter
         if (!this.commonFields.includes(attribute.id)) {
@@ -75,9 +74,13 @@ class ProductFrom extends React.Component {
         let previewInput = this.productPreview[0];
         this.handleAttribute(e)
         let attribute = []
+        let id = ''
+        if(e.target.id === 'productType') { id = 'type'} 
+        else { id = e.target.id}
+        console.log(id)
         for(let field in this.attributeConverter){
             for(let i of this.formFields){
-                if (i == field ) {
+                if (i === field ) {
                     attribute.push(this.attributeConverter[field])
                 }
             }
@@ -87,7 +90,7 @@ class ProductFrom extends React.Component {
             attribute = ''
         }
         previewInput['attribute'] = attribute
-        previewInput[e.target.id] = e.target.value
+        previewInput[id] = e.target.value
         this.setProductPreview([previewInput])
         this.handleSave()
         this.forceUpdate()
@@ -129,6 +132,18 @@ class ProductFrom extends React.Component {
     }
 
 
+    handleSubmit(e){
+        e.preventDefault()
+
+        const formData = new FormData(e.target)
+
+        fetch('http://localhost:8080/add', {
+            method: 'POST',
+            body: formData,
+        })
+    }
+
+
     render(){
         return (
             <section className='container' id='add-product-page'>
@@ -137,10 +152,10 @@ class ProductFrom extends React.Component {
                 </div>
                 <div id="product-view">
                     <div>
-                        <form id='product-form' action='/'>
+                        <form id='product_form' method='POST' action='http://localhost:8080/add' onSubmit={this.handleSubmit}>
                             <div id="form-selector">
                                 <label id='select-label'>Type</label>
-                                <select name="productType" id="type" onChange={this.handleType}>
+                                <select name="productType" id="productType" onChange={this.handleType}>
                                     <option value="book">Book</option>
                                     <option value="dvd">Dvd</option>
                                     <option value="furniture">Furniture</option>

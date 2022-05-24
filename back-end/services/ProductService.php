@@ -32,7 +32,7 @@
             }
         }
 
-        public function deleteFromDB (string $productSku) {
+        public function delete (string $productSku) {
             $this->checkRepository();
             $this->checkValidator();
 

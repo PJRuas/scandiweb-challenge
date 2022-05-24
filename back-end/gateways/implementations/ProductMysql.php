@@ -3,11 +3,11 @@
         
     class ProductMysql implements ProductGateway {
         private $dbType = 'mysql';
-        private $dbHost = 'localhost';
+        private $dbHost = 'sql11.freemysqlhosting.net';
         private $dbPort = '3306';
-        private $dbName = 'scandiweb_challenge';
-        private $dbLogin = 'pedro';
-        private $dbPass = '0306201526';
+        private $dbName = 'sql11494752';
+        private $dbLogin = 'sql11494752';
+        private $dbPass = 'SZzREsH2nE';
         private $dbDeclare;
         private $pdo;
         
@@ -55,19 +55,6 @@
         }
 
         public function update(Product $productToUpdate){
-            // $this->pdo ? : $this->connect();
-            
-            // $productSku = $productToUpdate->getSku();
-            // $sku = $productToUpdate->getSku();
-            // $name = $productToUpdate->getName();
-            // $price = $productToUpdate->getPrice();
-            // $attribute = json_encode($productToUpdate->getAttribute());
-            // $type = $productToUpdate->getType();
-
-
-            // $statement = $this->pdo->prepare('SELECT * FROM products');
-            // $statement->execute();
-            // return $statement->fetchAll(PDO::FETCH_ASSOC);
         }
         
         public function getAll(){
