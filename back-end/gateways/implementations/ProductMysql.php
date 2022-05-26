@@ -36,7 +36,7 @@
 
         public function delete(string $productSku){
             $this->pdo ? : $this->connect();
-            $statement = $this->pdo->prepare("DELETE FROM products p WHERE p.sku = '$productSku' ");
+            $statement = $this->pdo->prepare("DELETE FROM products WHERE sku = '$productSku' ");
             $statement->execute();
         }
 

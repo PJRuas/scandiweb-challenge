@@ -16,19 +16,18 @@
             echo json_encode($this->service->getAllFromDB());
         }
 
-        public function postToDB($productRequest = null){
-            $productRequest ??= $_POST;
+        public function postToDB(){
+            $productRequest = $_POST;
             $this->startController();
             $productToSave = $this->productDto->fromRequest($productRequest);
             $this->service->saveToDB($productToSave);
         }
 
-        public function deleteFromDB(array $markedProducts = null){
+        public function deleteFromDB(){
             $this->startController();
-            $markedProducts ??= json_decode(file_get_contents('php://input'));
+            $markedProducts = json_decode(file_get_contents('php://input'));
 
             foreach($markedProducts as $toDelete){
-                echo $toDelete;
                 $this->service->delete($toDelete);
             }
         }

@@ -77,7 +77,6 @@ class ProductFrom extends React.Component {
         let id = ''
         if(e.target.id === 'productType') { id = 'type'} 
         else { id = e.target.id}
-        console.log(id)
         for(let field in this.attributeConverter){
             for(let i of this.formFields){
                 if (i === field ) {
@@ -137,7 +136,7 @@ class ProductFrom extends React.Component {
 
         const formData = new FormData(e.target)
 
-        fetch('https://pedro-ruas-scandiweb-test.herokuapp.com/add', {
+        fetch('http://localhost:8080/add', {
             method: 'POST',
             body: formData,
         })
@@ -152,7 +151,7 @@ class ProductFrom extends React.Component {
                 </div>
                 <div id="product-view">
                     <div>
-                        <form id='product_form' method='POST' action='https://pedro-ruas-scandiweb-test.herokuapp.com/add' onSubmit={this.handleSubmit}>
+                        <form id='product_form' method='POST' action='http://localhost:8080/add' onSubmit={this.handleSubmit}>
                             <div id="form-selector">
                                 <label id='select-label'>Type</label>
                                 <select name="productType" id="productType" onChange={this.handleType}>
