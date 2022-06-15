@@ -13,13 +13,13 @@
         }
 
         abstract public function __toString();
+        abstract public static function listAttribute();
+        abstract public function getType();
 
         public function getSku() {return $this->skuKey;}
         public function getName() {return $this->name;}
         public function getPrice() {return $this->price;}
         public function getAttribute() {return $this->uniqueAttribute;}
-        public function getType() {return '';}
-        
 
         public function setSku($skuKey) {$this->skuKey = $skuKey;}
         public function setName($name) {$this->name = $name;}

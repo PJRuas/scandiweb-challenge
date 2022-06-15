@@ -130,20 +130,45 @@ class ProductFrom extends React.Component {
         }
     }
 
+    handleInputs(){
+        let inputs = document.querySelectorAll('#product_form input')
+        let productType = document.getElementById('productType')
+
+        let type = 'book'
+
+        if(productType){
+            type = productType.value
+        }
+
+        for(let element of inputs){
+            element.addEventListener('invalid', function(event) {
+              if(event.target.validity.valueMissing){
+                  event.target.setCustomValidity('Please provide ' + type + "'s " + element.id)
+              }  
+            })
+
+            element.addEventListener('change', function(event) {
+                event.target.setCustomValidity('')
+              })
+        }
+
+    }
 
     handleSubmit(e){
         e.preventDefault()
 
         const formData = new FormData(e.target)
 
-        fetch('http://localhost:8080/add', {
+        fetch('https://pedro-ruas-scandiweb-test.herokuapp.com/add' + this.productPreview.type, {
             method: 'POST',
             body: formData,
         })
+        this.props.success();
     }
 
 
     render(){
+        this.handleInputs()
         return (
             <section className='container' id='add-product-page'>
                 <div id="add-product-header">
@@ -151,7 +176,7 @@ class ProductFrom extends React.Component {
                 </div>
                 <div id="product-view">
                     <div>
-                        <form id='product_form' method='POST' action='http://localhost:8080/add' onSubmit={this.handleSubmit}>
+                        <form id='product_form' method='POST' action='https://pedro-ruas-scandiweb-test.herokuapp.com/add' onSubmit={this.handleSubmit}>
                             <div id="form-selector">
                                 <label id='select-label'>Type</label>
                                 <select name="productType" id="productType" onChange={this.handleType}>

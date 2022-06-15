@@ -26,12 +26,17 @@
             $attribute = json_encode($product->getAttribute());
             $type = $product->getType();
 
-            $this->pdo ? : $this->connect();
-            $statement = $this->pdo->prepare("INSERT INTO products
-                (sku, name, price, attribute, type)
-                VALUES('$sku', '$name', '$price', '$attribute', '$type');
-            ");
-            $statement->execute();
+            try{
+                $this->pdo ? : $this->connect();
+                $statement = $this->pdo->prepare("INSERT INTO products
+                    (sku, name, price, attribute, type)
+                    VALUES('$sku', '$name', '$price', '$attribute', '$type');
+                ");
+                $statement->execute();
+            } catch (Exception $e) {
+                echo 'Exception found: ', $e->getMessage(), "\n";
+            }
+            echo $product;
         }
 
         public function delete(string $productSku){

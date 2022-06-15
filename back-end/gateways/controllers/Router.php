@@ -15,12 +15,12 @@
         }
 
         public function resolve(){
-            $productController = new ProductController();
             $currentUrl = $_SERVER['REQUEST_URI'];
             $methodRequest = $_SERVER['REQUEST_METHOD'];
             $findFunction = ['GET' => $this->getRoutes[$currentUrl], 'POST' => $this->postRoutes[$currentUrl]];
             $function = $findFunction[$methodRequest];
-            call_user_func([$productController, $function]);            
+
+            call_user_func([new ProductController, $function]);            
         }
     }
 

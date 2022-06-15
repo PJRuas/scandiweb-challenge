@@ -7,7 +7,10 @@
         $router = new Router();
 
         $router->get('/', 'getAllFromDB');
-        $router->post('/add', 'postToDB');
+
+        $router->post('/add/book', 'postBook');
+        $router->post('/add/dvd', 'postDvd');
+        $router->post('/add/furniture', 'postFurniture');
         $router->post('/delete', 'deleteFromDB');
         
         $router->resolve();

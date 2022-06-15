@@ -22,7 +22,7 @@ class AllProducts extends React.Component {
   }
 
   populateDb(){
-      fetch("http://localhost:8080")
+      fetch("https://pedro-ruas-scandiweb-test.herokuapp.com")
       .then((result) => result.json())
       .then((jsonResult) => this.setState({dbRequest : jsonResult}))
   }
@@ -60,7 +60,12 @@ class AllProducts extends React.Component {
         deletable.push(key)
       }
     }
-    fetch('http://localhost:8080/delete', {
+
+    if(deletable.length === 0){
+      return null
+    }
+
+    fetch('https://pedro-ruas-scandiweb-test.herokuapp.com/delete', {
             method: 'POST',
             body: JSON.stringify(deletable),
         })
@@ -84,7 +89,7 @@ class AllProducts extends React.Component {
           'text':'MASS DELETE',
           'class':'btn btn-alert',
           'function': this.massDelete,
-          'buttonStatus': this.buttonStatus}}/>
+          'buttonStatus': false}}/>
           <ProductList function={this.getDeletable} products={this.state.dbRequest}/>
     </>
     )
