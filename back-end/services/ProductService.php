@@ -28,7 +28,7 @@
             $this->checkValidator();
 
             if($this->validator->validateSave($product)) {
-                return $this->repository->save($product);
+               return $this->repository->save($product);
             }
         }
 

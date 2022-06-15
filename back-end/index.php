@@ -2,13 +2,16 @@
 
         header("Access-Control-Allow-Origin: *");
         header("Access-Control-Allow-Headers: content-type");
+        header("Access-Control-Allow-Methods: *");
         
-        $controller = new ProductController();
         $router = new Router();
 
-        $router->get('/', [$controller, 'getAllFromDB']);
-        $router->post('/add', [$controller, 'postToDB']);
-        $router->post('/delete', [$controller, 'deleteFromDB']);
+        $router->get('/', 'getAllFromDB');
+
+        $router->post('/add/book', 'postBook');
+        $router->post('/add/dvd', 'postDvd');
+        $router->post('/add/furniture', 'postFurniture');
+        $router->post('/delete', 'deleteFromDB');
         
         $router->resolve();
 ?>

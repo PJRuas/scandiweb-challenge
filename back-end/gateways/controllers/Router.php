@@ -15,11 +15,12 @@
         }
 
         public function resolve(){
-            $currentUrl = $_SERVER['PATH_INFO'] ?? '/';
+            $currentUrl = $_SERVER['REQUEST_URI'];
             $methodRequest = $_SERVER['REQUEST_METHOD'];
             $findFunction = ['GET' => $this->getRoutes[$currentUrl], 'POST' => $this->postRoutes[$currentUrl]];
-            $function = $findFunction[$methodRequest]; 
-            call_user_func($function);            
+            $function = $findFunction[$methodRequest];
+
+            call_user_func([new ProductController, $function]);            
         }
     }
 

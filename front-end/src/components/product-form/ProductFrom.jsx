@@ -77,7 +77,6 @@ class ProductFrom extends React.Component {
         let id = ''
         if(e.target.id === 'productType') { id = 'type'} 
         else { id = e.target.id}
-        console.log(id)
         for(let field in this.attributeConverter){
             for(let i of this.formFields){
                 if (i === field ) {
@@ -131,20 +130,45 @@ class ProductFrom extends React.Component {
         }
     }
 
+    handleInputs(){
+        let inputs = document.querySelectorAll('#product_form input')
+        let productType = document.getElementById('productType')
+
+        let type = 'book'
+
+        if(productType){
+            type = productType.value
+        }
+
+        for(let element of inputs){
+            element.addEventListener('invalid', function(event) {
+              if(event.target.validity.valueMissing){
+                  event.target.setCustomValidity('Please provide ' + type + "'s " + element.id)
+              }  
+            })
+
+            element.addEventListener('change', function(event) {
+                event.target.setCustomValidity('')
+              })
+        }
+
+    }
 
     handleSubmit(e){
         e.preventDefault()
 
         const formData = new FormData(e.target)
 
-        fetch('https://pedro-ruas-scandiweb-test.herokuapp.com/add', {
+        fetch('https://pedro-ruas-scandiweb-test.herokuapp.com/add' + this.productPreview.type, {
             method: 'POST',
             body: formData,
         })
+        this.props.success();
     }
 
 
     render(){
+        this.handleInputs()
         return (
             <section className='container' id='add-product-page'>
                 <div id="add-product-header">

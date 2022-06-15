@@ -60,6 +60,11 @@ class AllProducts extends React.Component {
         deletable.push(key)
       }
     }
+
+    if(deletable.length === 0){
+      return null
+    }
+
     fetch('https://pedro-ruas-scandiweb-test.herokuapp.com/delete', {
             method: 'POST',
             body: JSON.stringify(deletable),
@@ -84,7 +89,7 @@ class AllProducts extends React.Component {
           'text':'MASS DELETE',
           'class':'btn btn-alert',
           'function': this.massDelete,
-          'buttonStatus': this.buttonStatus}}/>
+          'buttonStatus': false}}/>
           <ProductList function={this.getDeletable} products={this.state.dbRequest}/>
     </>
     )

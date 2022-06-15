@@ -4,11 +4,9 @@
     class ProductController {
 
         private $service;
-        private $productDto;
         
         private function startController(){
             $this->service ??= new ProductService('mysql');
-            $this->productDto ??= new ProductDto();
         }
 
         public function getAllFromDB(){
@@ -16,19 +14,37 @@
             echo json_encode($this->service->getAllFromDB());
         }
 
-        public function postToDB($productRequest = null){
-            $productRequest ??= $_POST;
+        private function postToDB($productToSave){
             $this->startController();
-            $productToSave = $this->productDto->fromRequest($productRequest);
             $this->service->saveToDB($productToSave);
         }
 
-        public function deleteFromDB(array $markedProducts = null){
+        public function postBook(){
+            $productRequest = $_POST;
+            $productArgs = ProductDto::fromRequest($productRequest);
+            $book = new Book($productArgs['sku'], $productArgs['name'], $productArgs['price'], $productArgs['attribute']);
+            $this->postToDB($book);
+        }
+
+        public function postDvd(){
+            $productRequest = $_POST;
+            $productArgs = ProductDto::fromRequest($productRequest);
+            $dvd = new Dvd($productArgs['sku'], $productArgs['name'], $productArgs['price'], $productArgs['attribute']);
+            $this->postToDB($dvd);
+        }
+
+        public function postFurniture(){
+            $productRequest = $_POST;
+            $productArgs = ProductDto::fromRequest($productRequest);
+            $furniture = new Furniture($productArgs['sku'], $productArgs['name'], $productArgs['price'], $productArgs['attribute']);
+            $this->postToDB($furniture);
+        }
+
+        public function deleteFromDB(){
             $this->startController();
-            $markedProducts ??= json_decode(file_get_contents('php://input'));
+            $markedProducts = json_decode(file_get_contents('php://input'));
 
             foreach($markedProducts as $toDelete){
-                echo $toDelete;
                 $this->service->delete($toDelete);
             }
         }
